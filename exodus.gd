@@ -5,7 +5,7 @@ extends Node
 @onready var enemy_counter_label = $CanvasLayer/EnemyCounter  # UI counter for enemies
 @onready var score_label = $CanvasLayer/Score  # UI for the score display
 
-@export var max_enemies: int = 100  # Maximum number of enemies
+@export var max_enemies: int = 1000  # Maximum number of enemies
 @export var player_power: int = 6  # Player power (always higher than enemy power)
 
 var enemy_scene: PackedScene = preload("res://enemy.tscn")  # Enemy scene to spawn
