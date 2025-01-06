@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dj16urf5rnhhn"]
+
+[ext_resource type="Script" path="res://enemycombiner.gd" id="1_eshca"]
+
+[node name="EnemyCombiner" type="Node"]
+script = ExtResource("1_eshca")
+enemy_scene = null
