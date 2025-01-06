@@ -1,6 +1,6 @@
 extends Node
 
-@onready var player = $Player  # Reference to the Player node
+@onready var player = $Player  # Reference to the Player node (Label)
 @onready var enemy_container = $EnemyContainer  # Container for all enemies
 @onready var enemy_counter_label = $CanvasLayer/EnemyCounter  # UI counter for enemies
 @onready var score_label = $CanvasLayer/Score  # UI for the score display
@@ -10,6 +10,10 @@ extends Node
 
 var enemy_scene: PackedScene = preload("res://enemy.tscn")  # Enemy scene to spawn
 var score: int = 0  # Player's score
+var enemy_kill_count: int = 0  # Counter for enemy kills
+
+# Load the ColorpowerScions script
+var cps = preload("res://ColorpowerScions.gd").new()
 
 func _ready() -> void:
 	update_enemy_counter()
@@ -25,10 +29,10 @@ func spawn_random_enemies() -> void:
 
 func spawn_enemy() -> void:
 	var new_enemy = enemy_scene.instantiate()
-	
+
 	# Generate a random position within bounds
 	var spawn_position = Vector2(randf_range(100, 700), randf_range(100, 500))
-	
+
 	# Ensure the enemy does not spawn too close to the player
 	while player.position.distance_to(spawn_position) < 100:  # Minimum distance of 100 units
 		spawn_position = Vector2(randf_range(100, 700), randf_range(100, 500))
@@ -59,6 +63,30 @@ func obliterate_enemy(target_enemy: Node) -> void:
 		update_enemy_counter()
 		increase_score()
 		print("red ded")
+
+		# Increment the enemy kill count and check for scion spawn
+		enemy_kill_count += 1
+		if enemy_kill_count >= 100:
+			spawn_random_scion()
+			enemy_kill_count = 0  # Reset the counter
+
+func spawn_random_scion() -> void:
+	var random_scion_data = cps.scions[randi() % cps.scions.size()]
+	var new_scion = cps.Scion.new()
+
+	new_scion.name = random_scion_data["name"]
+	new_scion.symbol = random_scion_data["symbol"]
+	new_scion.color = random_scion_data["color"]
+	new_scion.stats = random_scion_data["stats"]
+
+	# Ensure the player reference is of type Label
+	if player is Label:
+		new_scion.player = player  # Pass the player reference
+	else:
+		print("Player is not of type Label")
+
+	new_scion.position = Vector2(randf_range(100, 700), randf_range(100, 500))
+	add_child(new_scion)
 
 func increase_score() -> void:
 	score += 10  # Increment score by 10 points
